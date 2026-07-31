@@ -261,11 +261,34 @@ void MainWindow::addGameforgeAccount(const QString &email, const QString &passwo
 
     if (!gfAcc->authenticate(captcha, gfChallengeId, wrongCredentials)) {
         if (captcha) {
-            CaptchaDialog captcha(gfChallengeId, gfAcc->getAuth()->getNetworkManager(), this);
-            int res = captcha.exec();
+            SyncNetworAccesskManager* netManager = gfAcc->getAuth()->getNetworkManager();
 
-            if (res == QDialog::Accepted) {
-                addGameforgeAccount(email, password, identityPath, installationId, customClientPath, proxyIp, socksPort, proxyUsername, proxyPassword, useProxy);
+            QJsonObject captchaInfo = CaptchaSolver::getCaptchaInfo(gfChallengeId, netManager);
+            QString type = captchaInfo.value("type").toString();
+            QString script = captchaInfo.value("script").toString();
+
+            if (type == "gf-image-drop-captcha") {
+                CaptchaDialog captcha(gfChallengeId, netManager, this);
+                int res = captcha.exec();
+
+                if (res == QDialog::Accepted) {
+                    addGameforgeAccount(email, password, identityPath, installationId, customClientPath, proxyIp, socksPort, proxyUsername, proxyPassword, useProxy);
+                }
+            }
+            else if (type == "gf-pow-captcha") {
+                QMessageBox::warning(
+                    this,
+                    "Unsupported type of captcha",
+                    "The type of captcha you received is not supported\nYou need to resolve it using the gameforge client or your browser."
+                );
+            }
+            else {
+                QMessageBox::critical(
+                    this,
+                    "Unsupported type of captcha",
+                    "Unsupported type of captcha\n\nType: " + type + "\nScript: " + script
+                        + "\n\nYou need to resolve it using the gameforge client or your browser."
+                );
             }
         }
         else if (wrongCredentials) {
