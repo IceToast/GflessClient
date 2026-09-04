@@ -1,9 +1,10 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include <QApplication>
+#include <QFile>
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SettingsDialog)
+SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent),
+                                                  ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
@@ -67,18 +68,54 @@ void SettingsDialog::setGameLanguage(int language)
 
 void SettingsDialog::setTheme(int index)
 {
-    switch (index) {
-    case 0:
-        QApplication::setStyle("Windows11");
-        break;
-    case 1:
-        QApplication::setStyle("Fusion");
-        break;
-    case 2:
-        QApplication::setStyle("Windowsvista");
-        break;
-    default:
-        break;
+    ui->themeComboBox->setCurrentIndex(index);
+    applyTheme(index);
+}
+
+void SettingsDialog::applyTheme(int index)
+{
+    QPalette pal;
+
+    if (index == 1)
+    {
+        pal.setColor(QPalette::Window, QColor(0xf6, 0xf8, 0xfa));
+        pal.setColor(QPalette::WindowText, QColor(0x1f, 0x23, 0x28));
+        pal.setColor(QPalette::Base, QColor(0xff, 0xff, 0xff));
+        pal.setColor(QPalette::AlternateBase, QColor(0xea, 0xee, 0xf2));
+        pal.setColor(QPalette::Text, QColor(0x1f, 0x23, 0x28));
+        pal.setColor(QPalette::Button, QColor(0xff, 0xff, 0xff));
+        pal.setColor(QPalette::ButtonText, QColor(0x1f, 0x23, 0x28));
+        pal.setColor(QPalette::Highlight, QColor(0x7a, 0x5a, 0xf8));
+        pal.setColor(QPalette::HighlightedText, QColor(0xff, 0xff, 0xff));
+        pal.setColor(QPalette::ToolTipBase, QColor(0xff, 0xff, 0xff));
+        pal.setColor(QPalette::ToolTipText, QColor(0x1f, 0x23, 0x28));
+        pal.setColor(QPalette::PlaceholderText, QColor(0x65, 0x6d, 0x76));
+    }
+    else
+    {
+        pal.setColor(QPalette::Window, QColor(0x0e, 0x11, 0x17));
+        pal.setColor(QPalette::WindowText, QColor(0xe6, 0xed, 0xf3));
+        pal.setColor(QPalette::Base, QColor(0x16, 0x1b, 0x22));
+        pal.setColor(QPalette::AlternateBase, QColor(0x1c, 0x21, 0x28));
+        pal.setColor(QPalette::Text, QColor(0xe6, 0xed, 0xf3));
+        pal.setColor(QPalette::Button, QColor(0x21, 0x26, 0x2d));
+        pal.setColor(QPalette::ButtonText, QColor(0xe6, 0xed, 0xf3));
+        pal.setColor(QPalette::Highlight, QColor(0x7a, 0x5a, 0xf8));
+        pal.setColor(QPalette::HighlightedText, QColor(0xff, 0xff, 0xff));
+        pal.setColor(QPalette::ToolTipBase, QColor(0x16, 0x1b, 0x22));
+        pal.setColor(QPalette::ToolTipText, QColor(0xe6, 0xed, 0xf3));
+        pal.setColor(QPalette::PlaceholderText, QColor(0x6e, 0x76, 0x81));
+    }
+
+    qApp->setPalette(pal);
+
+    QString qss = index == 1 ? ":/resources/light.qss" : ":/resources/dark.qss";
+
+    QFile styleFile(qss);
+
+    if (styleFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qApp->setStyleSheet(styleFile.readAll());
     }
 }
 
@@ -129,7 +166,6 @@ void SettingsDialog::initLanguageComboBox()
     ui->gameLanguageComboBox->addItem("Čeština", 7);
 }
 
-
 void SettingsDialog::on_selectProfilePathButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this, "Select profile", QDir::rootPath(), "(*.ini)");
@@ -146,4 +182,3 @@ void SettingsDialog::on_themeComboBox_currentIndexChanged(int index)
 {
     setTheme(index);
 }
-

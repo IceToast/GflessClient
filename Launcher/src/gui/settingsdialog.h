@@ -40,6 +40,8 @@ public:
 
     void setThemeComboBox(int index);
 
+    static void applyTheme(int index);
+
     void setDisabledNosmall(bool b);
 
     bool getDisabledNosmall() const;
