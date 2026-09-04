@@ -6,5 +6,12 @@
         <file>resources/create_account_icon.png</file>
         <file>resources/repair_icon.png</file>
         <file>resources/blackbox.html</file>
+        <file>resources/dark.qss</file>
+        <file>resources/light.qss</file>
+        <file>resources/settings_icon_bright.png</file>
+        <file>resources/create_account_icon_bright.png</file>
+        <file>resources/repair_icon_bright.png</file>
+        <file>resources/chevron_down.svg</file>
+        <file>resources/chevron_up.svg</file>
     </qresource>
 </RCC>
