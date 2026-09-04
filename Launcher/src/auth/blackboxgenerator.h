@@ -34,6 +34,7 @@ private:
     static BlackboxGenerator* instance;
     QWebEnginePage* page;
     QWebChannel* channel;
+    bool pageLoadedOnce = false;
 
 };
 
