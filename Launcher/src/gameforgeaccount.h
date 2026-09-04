@@ -44,6 +44,10 @@ public:
 
     QString getcustomClientPath() const;
 
+    void setOtpCode(const QString& otpCode);
+
+    bool getOtpRequired() const;
+
     void refreshIdentity();
 
 private:

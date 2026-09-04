@@ -98,7 +98,8 @@ private:
         const QString& socksPort,
         const QString& proxyUsername,
         const QString& proxyPassword,
-        const bool useProxy
+        const bool useProxy,
+        const QString& otpCode = ""
     );
 
     void addGameforgeAccount(

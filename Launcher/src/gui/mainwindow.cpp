@@ -7,6 +7,7 @@
 #include "editmultipleprofileaccountsdialog.h"
 #include "gameupdatedialog.h"
 #include "creategameaccountdialog.h"
+#include "otpdialog.h"
 #include <QQueue>
 #include "ui_mainwindow.h"
 
@@ -240,7 +241,7 @@ void MainWindow::saveAccountProfiles(const QString &path)
     settings.endGroup();
 }
 
-void MainWindow::addGameforgeAccount(const QString &email, const QString &password, const QString& identityPath, const QString &installationId, const QString &customClientPath, const QString &proxyIp, const QString &socksPort, const QString &proxyUsername, const QString &proxyPassword, const bool useProxy)
+void MainWindow::addGameforgeAccount(const QString &email, const QString &password, const QString& identityPath, const QString &installationId, const QString &customClientPath, const QString &proxyIp, const QString &socksPort, const QString &proxyUsername, const QString &proxyPassword, const bool useProxy, const QString &otpCode)
 {
     bool captcha = false;
     bool wrongCredentials = false;
@@ -259,6 +260,10 @@ void MainWindow::addGameforgeAccount(const QString &email, const QString &passwo
         this
     );
 
+    if (!otpCode.isEmpty()) {
+        gfAcc->setOtpCode(otpCode);
+    }
+
     if (!gfAcc->authenticate(captcha, gfChallengeId, wrongCredentials)) {
         if (captcha) {
             CaptchaDialog captcha(gfChallengeId, gfAcc->getAuth()->getNetworkManager(), this);
@@ -266,6 +271,14 @@ void MainWindow::addGameforgeAccount(const QString &email, const QString &passwo
 
             if (res == QDialog::Accepted) {
                 addGameforgeAccount(email, password, identityPath, installationId, customClientPath, proxyIp, socksPort, proxyUsername, proxyPassword, useProxy);
+            }
+        }
+        else if (gfAcc->getOtpRequired()) {
+            OtpDialog otpDialog(this);
+            int res = otpDialog.exec();
+
+            if (res == QDialog::Accepted) {
+                addGameforgeAccount(email, password, identityPath, installationId, customClientPath, proxyIp, socksPort, proxyUsername, proxyPassword, useProxy, otpDialog.getOtpCode());
             }
         }
         else if (wrongCredentials) {
