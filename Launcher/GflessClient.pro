@@ -40,6 +40,7 @@ SOURCES += \
     src/gui/editmultipleprofileaccountsdialog.cpp \
     src/gui/gameupdatedialog.cpp \
     src/gui/identitydialog.cpp \
+    src/gui/otpdialog.cpp \
     src/auth/nostaleauth.cpp \
     src/profile.cpp \
     src/gui/settingsdialog.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     src/gui/editmultipleprofileaccountsdialog.h \
     src/gui/gameupdatedialog.h \
     src/gui/identitydialog.h \
+    src/gui/otpdialog.h \
     src/gui/mainwindow.h \
     src/auth/nostaleauth.h \
     src/processchecker.h \
@@ -81,6 +83,7 @@ FORMS += \
     src/gui/editmultipleprofileaccountsdialog.ui \
     src/gui/gameupdatedialog.ui \
     src/gui/identitydialog.ui \
+    src/gui/otpdialog.ui \
     src/gui/mainwindow.ui \
     src/gui/settingsdialog.ui
 
