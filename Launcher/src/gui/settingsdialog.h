@@ -8,6 +8,16 @@ namespace Ui {
 class SettingsDialog;
 }
 
+enum Theme
+{
+    ThemeModernWindows = 0,
+    ThemeFusion,
+    ThemeWindows,
+    ThemeDark,
+    ThemeLight,
+    ThemeDefault = ThemeDark
+};
+
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -39,6 +49,8 @@ public:
     void setTheme(int index);
 
     void setThemeComboBox(int index);
+
+    static void applyTheme(int index);
 
     void setDisabledNosmall(bool b);
 

@@ -51,8 +51,8 @@ void MainWindow::loadSettings()
     settingsDialog->setProfilesPath(settings.value("profiles path").toString());
     settingsDialog->setOpenInterval(settings.value("open interval", 10).toInt());
     settingsDialog->setGameLanguage(settings.value("game language", 0).toInt());
-    settingsDialog->setTheme(settings.value("theme", 0).toInt());
-    settingsDialog->setThemeComboBox(settings.value("theme", 0).toInt());
+    settingsDialog->setTheme(settings.value("theme", ThemeDefault).toInt());
+    settingsDialog->setThemeComboBox(settings.value("theme", ThemeDefault).toInt());
     settingsDialog->setDisabledNosmall(settings.value("disable_nosmall", false).toBool());
     settingsDialog->setCheckUpdates(settings.value("check_updates", true).toBool());
 

@@ -136,6 +136,16 @@
          <string>Windows</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Dark</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Light</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

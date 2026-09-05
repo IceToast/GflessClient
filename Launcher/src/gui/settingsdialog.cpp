@@ -1,9 +1,115 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SettingsDialog)
+#include <QApplication>
+#include <QFile>
+#include <QStyleFactory>
+
+#include <array>
+
+namespace {
+
+struct RoleColor
+{
+    QPalette::ColorRole role;
+    QRgb value;
+};
+
+constexpr std::array<RoleColor, 12> kLightColors{{
+    { QPalette::Window, 0xf6f8fa },
+    { QPalette::WindowText, 0x1f2328 },
+    { QPalette::Base, 0xffffff },
+    { QPalette::AlternateBase, 0xeaeef2 },
+    { QPalette::Text, 0x1f2328 },
+    { QPalette::Button, 0xffffff },
+    { QPalette::ButtonText, 0x1f2328 },
+    { QPalette::Highlight, 0x7a5af8 },
+    { QPalette::HighlightedText, 0xffffff },
+    { QPalette::ToolTipBase, 0xffffff },
+    { QPalette::ToolTipText, 0x1f2328 },
+    { QPalette::PlaceholderText, 0x656d76 },
+}};
+
+constexpr std::array<RoleColor, 12> kDarkColors{{
+    { QPalette::Window, 0x0e1117 },
+    { QPalette::WindowText, 0xe6edf3 },
+    { QPalette::Base, 0x161b22 },
+    { QPalette::AlternateBase, 0x1c2128 },
+    { QPalette::Text, 0xe6edf3 },
+    { QPalette::Button, 0x21262d },
+    { QPalette::ButtonText, 0xe6edf3 },
+    { QPalette::Highlight, 0x7a5af8 },
+    { QPalette::HighlightedText, 0xffffff },
+    { QPalette::ToolTipBase, 0x161b22 },
+    { QPalette::ToolTipText, 0xe6edf3 },
+    { QPalette::PlaceholderText, 0x6e7681 },
+}};
+
+QPalette themePalette(bool light)
+{
+    const auto &colors = light ? kLightColors : kDarkColors;
+    QPalette palette;
+
+    for (const RoleColor &color : colors)
+        palette.setColor(color.role, QColor(color.value));
+
+    return palette;
+}
+
+QString firstAvailableStyle(const QStringList &preferred)
+{
+    const QStringList available = QStyleFactory::keys();
+
+    for (const QString &key : preferred)
+    {
+        if (available.contains(key, Qt::CaseInsensitive))
+            return key;
+    }
+
+    return {};
+}
+
+void applyNativeStyle(int theme)
+{
+    QStringList preferred;
+
+    switch (theme)
+    {
+    case ThemeModernWindows:
+        preferred = { QStringLiteral("windows11"), QStringLiteral("windowsvista"), QStringLiteral("windows"), QStringLiteral("fusion") };
+        break;
+    case ThemeWindows:
+        preferred = { QStringLiteral("windowsvista"), QStringLiteral("windows"), QStringLiteral("fusion") };
+        break;
+    case ThemeFusion:
+        preferred = { QStringLiteral("fusion"), QStringLiteral("windowsvista"), QStringLiteral("windows") };
+        break;
+    default:
+        return;
+    }
+
+    const QString styleKey = firstAvailableStyle(preferred);
+    if (styleKey.isEmpty())
+        return;
+
+    QApplication::setStyle(styleKey);
+    qApp->setStyleSheet(QString());
+    qApp->setPalette(QPalette());
+}
+
+void applyCustomTheme(bool light)
+{
+    qApp->setPalette(themePalette(light));
+
+    QFile styleFile(light ? QStringLiteral(":/resources/light.qss") : QStringLiteral(":/resources/dark.qss"));
+    if (styleFile.open(QFile::ReadOnly | QFile::Text))
+        qApp->setStyleSheet(QString::fromUtf8(styleFile.readAll()));
+}
+
+} // namespace
+
+SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent),
+                                                  ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
@@ -67,17 +173,24 @@ void SettingsDialog::setGameLanguage(int language)
 
 void SettingsDialog::setTheme(int index)
 {
-    switch (index) {
-    case 0:
-        QApplication::setStyle("Windows11");
+    QSignalBlocker blocker(ui->themeComboBox);
+    ui->themeComboBox->setCurrentIndex(index);
+    applyTheme(index);
+}
+
+void SettingsDialog::applyTheme(int index)
+{
+    switch (index)
+    {
+    case ThemeModernWindows:
+    case ThemeFusion:
+    case ThemeWindows:
+        applyNativeStyle(index);
         break;
-    case 1:
-        QApplication::setStyle("Fusion");
-        break;
-    case 2:
-        QApplication::setStyle("Windowsvista");
-        break;
+    case ThemeLight:
+    case ThemeDark:
     default:
+        applyCustomTheme(index == ThemeLight);
         break;
     }
 }
@@ -129,7 +242,6 @@ void SettingsDialog::initLanguageComboBox()
     ui->gameLanguageComboBox->addItem("Čeština", 7);
 }
 
-
 void SettingsDialog::on_selectProfilePathButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this, "Select profile", QDir::rootPath(), "(*.ini)");
@@ -146,4 +258,3 @@ void SettingsDialog::on_themeComboBox_currentIndexChanged(int index)
 {
     setTheme(index);
 }
-

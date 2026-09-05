@@ -1,0 +1,301 @@
+/* modern dark theme */
+
+* {
+    outline: none;
+}
+
+QMainWindow, QDialog, QWidget {
+    background-color: #0e1117;
+    color: #e6edf3;
+    font-size: 13px;
+}
+
+QLabel {
+    background: transparent;
+    color: #e6edf3;
+}
+
+QComboBox, QLineEdit, QSpinBox {
+    background-color: #161b22;
+    border: 1px solid #2d333b;
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: #e6edf3;
+    selection-background-color: #7a5af8;
+    selection-color: #ffffff;
+}
+
+QComboBox:hover, QLineEdit:hover, QSpinBox:hover {
+    border-color: #3d444d;
+}
+
+QComboBox:focus, QLineEdit:focus, QSpinBox:focus {
+    border-color: #7a5af8;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox::down-arrow {
+    image: url(:/resources/chevron_down.svg);
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #161b22;
+    border: 1px solid #2d333b;
+    border-radius: 8px;
+    padding: 4px;
+    selection-background-color: #7a5af8;
+    selection-color: #ffffff;
+    outline: none;
+}
+
+QPushButton {
+    background-color: #21262d;
+    border: 1px solid #2d333b;
+    border-radius: 8px;
+    padding: 6px 14px;
+    color: #e6edf3;
+}
+
+QPushButton:hover {
+    background-color: #2d333b;
+    border-color: #3d444d;
+}
+
+QPushButton:pressed {
+    background-color: #161b22;
+}
+
+QPushButton:disabled {
+    background-color: #161b22;
+    color: #6e7681;
+    border-color: #2d333b;
+}
+
+QPushButton#openAccountsButton {
+    background-color: #7a5af8;
+    border: 1px solid #7a5af8;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+QPushButton#openAccountsButton:hover {
+    background-color: #8a6afa;
+    border-color: #8a6afa;
+}
+
+QPushButton#openAccountsButton:pressed {
+    background-color: #6a4ae8;
+}
+
+QListWidget {
+    background-color: #161b22;
+    border: 1px solid #2d333b;
+    border-radius: 10px;
+    padding: 6px;
+    color: #e6edf3;
+}
+
+QListWidget::item {
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: 2px 0;
+}
+
+QListWidget::item:hover {
+    background-color: #1c2128;
+}
+
+QListWidget::item:selected {
+    background-color: #7a5af8;
+    color: #ffffff;
+}
+
+QMenuBar {
+    background-color: #0e1117;
+    color: #e6edf3;
+    border-bottom: 1px solid #2d333b;
+}
+
+QMenuBar::item {
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: transparent;
+}
+
+QMenuBar::item:selected {
+    background-color: #21262d;
+}
+
+QMenu {
+    background-color: #161b22;
+    border: 1px solid #2d333b;
+    border-radius: 10px;
+    padding: 6px;
+}
+
+QMenu::item {
+    padding: 7px 24px;
+    border-radius: 6px;
+}
+
+QMenu::item:selected {
+    background-color: #7a5af8;
+    color: #ffffff;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: #2d333b;
+    margin: 6px 8px;
+}
+
+QStatusBar {
+    background-color: #0e1117;
+    color: #8b949e;
+    border-top: 1px solid #2d333b;
+}
+
+QToolTip {
+    background-color: #161b22;
+    color: #e6edf3;
+    border: 1px solid #2d333b;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+QCheckBox {
+    spacing: 8px;
+    color: #e6edf3;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #2d333b;
+    border-radius: 4px;
+    background-color: #161b22;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #7a5af8;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #7a5af8;
+    border-color: #7a5af8;
+}
+
+QCheckBox:disabled {
+    color: #6e7681;
+}
+
+QSpinBox::up-button, QSpinBox::down-button {
+    background-color: #21262d;
+    border: 1px solid #2d333b;
+    border-radius: 4px;
+    width: 18px;
+    margin: 1px;
+}
+
+QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+    background-color: #2d333b;
+}
+
+QSpinBox::up-arrow {
+    image: url(:/resources/chevron_up.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QSpinBox::down-arrow {
+    image: url(:/resources/chevron_down.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical {
+    background: #2d333b;
+    border-radius: 5px;
+    min-height: 30px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #3d444d;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 10px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #2d333b;
+    border-radius: 5px;
+    min-width: 30px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #3d444d;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line {
+    width: 0;
+    height: 0;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: transparent;
+}
+
+QProgressBar {
+    background-color: #161b22;
+    border: 1px solid #2d333b;
+    border-radius: 8px;
+    text-align: center;
+    color: #e6edf3;
+    height: 18px;
+}
+
+QProgressBar::chunk {
+    background-color: #7a5af8;
+    border-radius: 7px;
+}
+
+QMessageBox {
+    background-color: #0e1117;
+}
+
+QMessageBox QLabel {
+    color: #e6edf3;
+}
+
+QDialogButtonBox QPushButton {
+    min-width: 80px;
+}
+
+/* Icon buttons use the bright icons on the dark background */
+QPushButton#gameSettingsButton {
+    qproperty-icon: url(:/resources/settings_icon_bright.png);
+}
+
+QPushButton#createGameAccButton {
+    qproperty-icon: url(:/resources/create_account_icon_bright.png);
+}
+
+QPushButton#repairButton {
+    qproperty-icon: url(:/resources/repair_icon_bright.png);
+}

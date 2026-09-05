@@ -50,7 +50,7 @@ For help and more in-depth tutorials, join the Discord server.
 * Decode blackbox data into a JSON identity file.
 
 ### Interface
-* Three UI themes: Modern Windows (Windows 11), Fusion, Windows (Windows Vista).
+* Five UI themes: the native Modern Windows (Windows 11), Fusion and Windows (Windows Vista) looks, plus custom Dark and Light themes.
 * Minimizes to system tray instead of closing.
 * Single-instance enforcement.
 
