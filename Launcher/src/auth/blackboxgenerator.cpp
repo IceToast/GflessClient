@@ -5,8 +5,6 @@
 #include <QJsonArray>
 #include <QRandomGenerator64>
 #include <QJsonDocument>
-#include <QElapsedTimer>
-#include <QApplication>
 
 BlackboxGenerator* BlackboxGenerator::instance = nullptr;
 
@@ -18,7 +16,6 @@ BlackboxGenerator::BlackboxGenerator(QObject *parent)
     channel->registerObject("callbackHandler", this);
     page->load(QUrl("qrc:/resources/blackbox.html"));
     page->setWebChannel(channel);
-    connect(page, &QWebEnginePage::loadFinished, this, [this](bool) { pageLoadedOnce = true; });
 }
 
 QJsonObject BlackboxGenerator::createRequest(const QString &gsid, const QString &installationId)
@@ -49,11 +46,8 @@ QString BlackboxGenerator::generate(const QString &gsid, const QString &installa
     QString result;
 
     BlackboxGenerator *generator = getInstance();
-    QElapsedTimer timer;
-    timer.start();
-    while (!generator->pageLoadedOnce && timer.elapsed() < 15000)
-        QApplication::processEvents();
-    if (!generator->pageLoadedOnce)
+
+    if (generator->page->isLoading())
         return {};
 
     connect(generator, &BlackboxGenerator::blackboxCreated, &loop, [&](const QString& blackbox) {
@@ -81,7 +75,6 @@ QString BlackboxGenerator::generate(const QString &gsid, const QString &installa
         generator->page->runJavaScript(script);
     }
 
-    //QTimer::singleShot(10000, &loop, &QEventLoop::quit);
     loop.exec();
     return result;
 }
