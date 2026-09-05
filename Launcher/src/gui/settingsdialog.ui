@@ -123,6 +123,21 @@
       <widget class="QComboBox" name="themeComboBox">
        <item>
         <property name="text">
+         <string>Modern Windows</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Fusion</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Windows</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Dark</string>
         </property>
        </item>

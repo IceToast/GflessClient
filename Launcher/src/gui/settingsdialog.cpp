@@ -1,7 +1,112 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+
 #include <QApplication>
 #include <QFile>
+#include <QStyleFactory>
+
+#include <array>
+
+namespace {
+
+struct RoleColor
+{
+    QPalette::ColorRole role;
+    QRgb value;
+};
+
+constexpr std::array<RoleColor, 12> kLightColors{{
+    { QPalette::Window, 0xf6f8fa },
+    { QPalette::WindowText, 0x1f2328 },
+    { QPalette::Base, 0xffffff },
+    { QPalette::AlternateBase, 0xeaeef2 },
+    { QPalette::Text, 0x1f2328 },
+    { QPalette::Button, 0xffffff },
+    { QPalette::ButtonText, 0x1f2328 },
+    { QPalette::Highlight, 0x7a5af8 },
+    { QPalette::HighlightedText, 0xffffff },
+    { QPalette::ToolTipBase, 0xffffff },
+    { QPalette::ToolTipText, 0x1f2328 },
+    { QPalette::PlaceholderText, 0x656d76 },
+}};
+
+constexpr std::array<RoleColor, 12> kDarkColors{{
+    { QPalette::Window, 0x0e1117 },
+    { QPalette::WindowText, 0xe6edf3 },
+    { QPalette::Base, 0x161b22 },
+    { QPalette::AlternateBase, 0x1c2128 },
+    { QPalette::Text, 0xe6edf3 },
+    { QPalette::Button, 0x21262d },
+    { QPalette::ButtonText, 0xe6edf3 },
+    { QPalette::Highlight, 0x7a5af8 },
+    { QPalette::HighlightedText, 0xffffff },
+    { QPalette::ToolTipBase, 0x161b22 },
+    { QPalette::ToolTipText, 0xe6edf3 },
+    { QPalette::PlaceholderText, 0x6e7681 },
+}};
+
+QPalette themePalette(bool light)
+{
+    const auto &colors = light ? kLightColors : kDarkColors;
+    QPalette palette;
+
+    for (const RoleColor &color : colors)
+        palette.setColor(color.role, QColor(color.value));
+
+    return palette;
+}
+
+QString firstAvailableStyle(const QStringList &preferred)
+{
+    const QStringList available = QStyleFactory::keys();
+
+    for (const QString &key : preferred)
+    {
+        if (available.contains(key, Qt::CaseInsensitive))
+            return key;
+    }
+
+    return {};
+}
+
+void applyNativeStyle(int theme)
+{
+    QStringList preferred;
+
+    switch (theme)
+    {
+    case ThemeModernWindows:
+        preferred = { QStringLiteral("windows11"), QStringLiteral("windowsvista"), QStringLiteral("windows"), QStringLiteral("fusion") };
+        break;
+    case ThemeWindows:
+        preferred = { QStringLiteral("windowsvista"), QStringLiteral("windows"), QStringLiteral("fusion") };
+        break;
+    case ThemeFusion:
+        preferred = { QStringLiteral("fusion"), QStringLiteral("windowsvista"), QStringLiteral("windows") };
+        break;
+    default:
+        return;
+    }
+
+    const QString styleKey = firstAvailableStyle(preferred);
+    if (styleKey.isEmpty())
+        return;
+
+    QApplication::setStyle(styleKey);
+    qApp->setStyleSheet(QString());
+    qApp->setPalette(QPalette());
+}
+
+void applyCustomTheme(bool light)
+{
+    qApp->setPalette(themePalette(light));
+
+    QFile styleFile(light ? QStringLiteral(":/resources/light.qss") : QStringLiteral(":/resources/dark.qss"));
+    if (styleFile.open(QFile::ReadOnly | QFile::Text))
+        qApp->setStyleSheet(QString::fromUtf8(styleFile.readAll()));
+}
+
+} // namespace
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent),
                                                   ui(new Ui::SettingsDialog)
@@ -68,54 +173,25 @@ void SettingsDialog::setGameLanguage(int language)
 
 void SettingsDialog::setTheme(int index)
 {
+    QSignalBlocker blocker(ui->themeComboBox);
     ui->themeComboBox->setCurrentIndex(index);
     applyTheme(index);
 }
 
 void SettingsDialog::applyTheme(int index)
 {
-    QPalette pal;
-
-    if (index == 1)
+    switch (index)
     {
-        pal.setColor(QPalette::Window, QColor(0xf6, 0xf8, 0xfa));
-        pal.setColor(QPalette::WindowText, QColor(0x1f, 0x23, 0x28));
-        pal.setColor(QPalette::Base, QColor(0xff, 0xff, 0xff));
-        pal.setColor(QPalette::AlternateBase, QColor(0xea, 0xee, 0xf2));
-        pal.setColor(QPalette::Text, QColor(0x1f, 0x23, 0x28));
-        pal.setColor(QPalette::Button, QColor(0xff, 0xff, 0xff));
-        pal.setColor(QPalette::ButtonText, QColor(0x1f, 0x23, 0x28));
-        pal.setColor(QPalette::Highlight, QColor(0x7a, 0x5a, 0xf8));
-        pal.setColor(QPalette::HighlightedText, QColor(0xff, 0xff, 0xff));
-        pal.setColor(QPalette::ToolTipBase, QColor(0xff, 0xff, 0xff));
-        pal.setColor(QPalette::ToolTipText, QColor(0x1f, 0x23, 0x28));
-        pal.setColor(QPalette::PlaceholderText, QColor(0x65, 0x6d, 0x76));
-    }
-    else
-    {
-        pal.setColor(QPalette::Window, QColor(0x0e, 0x11, 0x17));
-        pal.setColor(QPalette::WindowText, QColor(0xe6, 0xed, 0xf3));
-        pal.setColor(QPalette::Base, QColor(0x16, 0x1b, 0x22));
-        pal.setColor(QPalette::AlternateBase, QColor(0x1c, 0x21, 0x28));
-        pal.setColor(QPalette::Text, QColor(0xe6, 0xed, 0xf3));
-        pal.setColor(QPalette::Button, QColor(0x21, 0x26, 0x2d));
-        pal.setColor(QPalette::ButtonText, QColor(0xe6, 0xed, 0xf3));
-        pal.setColor(QPalette::Highlight, QColor(0x7a, 0x5a, 0xf8));
-        pal.setColor(QPalette::HighlightedText, QColor(0xff, 0xff, 0xff));
-        pal.setColor(QPalette::ToolTipBase, QColor(0x16, 0x1b, 0x22));
-        pal.setColor(QPalette::ToolTipText, QColor(0xe6, 0xed, 0xf3));
-        pal.setColor(QPalette::PlaceholderText, QColor(0x6e, 0x76, 0x81));
-    }
-
-    qApp->setPalette(pal);
-
-    QString qss = index == 1 ? ":/resources/light.qss" : ":/resources/dark.qss";
-
-    QFile styleFile(qss);
-
-    if (styleFile.open(QFile::ReadOnly | QFile::Text))
-    {
-        qApp->setStyleSheet(styleFile.readAll());
+    case ThemeModernWindows:
+    case ThemeFusion:
+    case ThemeWindows:
+        applyNativeStyle(index);
+        break;
+    case ThemeLight:
+    case ThemeDark:
+    default:
+        applyCustomTheme(index == ThemeLight);
+        break;
     }
 }
 

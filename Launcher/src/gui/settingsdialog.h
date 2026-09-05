@@ -8,6 +8,16 @@ namespace Ui {
 class SettingsDialog;
 }
 
+enum Theme
+{
+    ThemeModernWindows = 0,
+    ThemeFusion,
+    ThemeWindows,
+    ThemeDark,
+    ThemeLight,
+    ThemeDefault = ThemeDark
+};
+
 class SettingsDialog : public QDialog
 {
     Q_OBJECT

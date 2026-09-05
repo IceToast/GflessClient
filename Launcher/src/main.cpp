@@ -26,10 +26,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Hatz Nostale");
     QCoreApplication::setApplicationName("Gfless Client");
 
-    // (0 = dark, 1 = light)
     QSettings settings;
     settings.beginGroup("MainWindow");
-    int theme = settings.value("theme", 0).toInt();
+    int theme = settings.value("theme", ThemeDefault).toInt();
     settings.endGroup();
     SettingsDialog::applyTheme(theme);
 
