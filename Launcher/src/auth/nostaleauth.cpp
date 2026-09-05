@@ -160,6 +160,10 @@ bool NostaleAuth::authenticate(const QString &email, const QString &password, bo
     content["locale"] = locale;
     content["password"] = password;
 
+    if (!otpCode.isEmpty()) {
+        content["otpCode"] = otpCode;
+    }
+
     reply = networkManager->post(request, QJsonDocument(content).toJson(QJsonDocument::Compact));
     reply->deleteLater();
 
@@ -169,10 +173,15 @@ bool NostaleAuth::authenticate(const QString &email, const QString &password, bo
 
     if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 201)
     {
+        QJsonArray errorTypes = jsonResponse["errorTypes"].toArray();
+
+        if (errorTypes.contains("OTP_REQUIRED")) {
+            otpRequired = true;
+            return false;
+        }
+
         if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 409) // Conflict Captcha or incorrect username or password
         {
-            QJsonArray errorTypes = jsonResponse["errorTypes"].toArray();
-
             if (errorTypes.contains("CHALLENGE_REQUIRED")) {
                 gfChallengeId = reply->rawHeader("gf-challenge-id").split(';').first();
                 captcha = true;
@@ -199,6 +208,8 @@ bool NostaleAuth::authenticate(const QString &email, const QString &password, bo
     }
 
     token = jsonResponse["token"].toString();
+    otpCode.clear();
+    otpRequired = false;
 
     return true;
 }
@@ -711,6 +722,16 @@ QString NostaleAuth::getToken() const
 QString NostaleAuth::getInstallationId() const
 {
     return installationId;
+}
+
+void NostaleAuth::setOtpCode(const QString &newOtpCode)
+{
+    otpCode = newOtpCode;
+}
+
+bool NostaleAuth::getOtpRequired() const
+{
+    return otpRequired;
 }
 
 SyncNetworAccesskManager *NostaleAuth::getNetworkManager() const

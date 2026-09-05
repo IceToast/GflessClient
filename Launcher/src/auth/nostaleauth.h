@@ -50,6 +50,10 @@ public:
 
     QString getInstallationId() const;
 
+    void setOtpCode(const QString &newOtpCode);
+
+    bool getOtpRequired() const;
+
     void refreshIdentity();
 
     void setToken(const QString &newToken);
@@ -116,6 +120,8 @@ private:
     QString version;
     QString gameSessionId;
     QString eventsSessionId;
+    QString otpCode;
+    bool otpRequired = false;
     QList<QSslCertificate> allCerts;
     std::shared_ptr<Identity> identity;
 

@@ -84,6 +84,16 @@ const NostaleAuth *GameforgeAccount::getAuth() const
     return auth;
 }
 
+void GameforgeAccount::setOtpCode(const QString &otpCode)
+{
+    auth->setOtpCode(otpCode);
+}
+
+bool GameforgeAccount::getOtpRequired() const
+{
+    return auth->getOtpRequired();
+}
+
 void GameforgeAccount::refreshIdentity()
 {
     auth->refreshIdentity();
