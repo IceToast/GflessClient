@@ -6,29 +6,15 @@ SyncNetworAccesskManager::SyncNetworAccesskManager(QObject *parent) : QNetworkAc
 
 }
 
-static bool isHandledByCaller(QNetworkReply* reply)
-{
-    int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    return status == 401 || status == 403 || status == 404 || status == 409 || status == 429;
-}
-
-static void handleReplyError(QNetworkReply* reply)
-{
-    if (isHandledByCaller(reply))
-        return;
-
-    qDebug() << "Error code:" << reply->error();
-    QString err = reply->errorString();
-    QMessageBox::critical(nullptr, "Error", err);
-}
-
 QNetworkReply* SyncNetworAccesskManager::post(const QNetworkRequest &request, const QByteArray &data)
 {
     QNetworkReply* reply = QNetworkAccessManager::post(request, data);
 
     connect(reply, &QNetworkReply::errorOccurred, this, [=]
     {
-        handleReplyError(reply);
+        qDebug() << "Error code:" << reply->error();
+        QString err = reply->errorString();
+        QMessageBox::critical(nullptr, "Error", err);
     });
 
     while (!reply->isFinished())
@@ -43,7 +29,9 @@ QNetworkReply* SyncNetworAccesskManager::get(const QNetworkRequest &request)
 
     connect(reply, &QNetworkReply::errorOccurred, this, [=]
     {
-        handleReplyError(reply);
+        qDebug() << "Error code:" << reply->error();
+        QString err = reply->errorString();
+        QMessageBox::critical(nullptr, "Error", err);
     });
 
     while (!reply->isFinished())
@@ -58,7 +46,9 @@ QNetworkReply *SyncNetworAccesskManager::sendCustomRequest(const QNetworkRequest
 
     connect(reply, &QNetworkReply::errorOccurred, this, [=]
     {
-        handleReplyError(reply);
+        qDebug() << "Error code:" << reply->error();
+        QString err = reply->errorString();
+        QMessageBox::critical(nullptr, "Error", err);
     });
 
     while (!reply->isFinished())
