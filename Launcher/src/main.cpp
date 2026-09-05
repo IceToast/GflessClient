@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "processchecker.h"
+#include "settingsdialog.h"
 
 #include <QApplication>
 #include <QMessageBox>
+#include <QSettings>
 #include <QSharedMemory>
 
 void checkGameforgeClient();
@@ -24,6 +26,12 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Hatz Nostale");
     QCoreApplication::setApplicationName("Gfless Client");
 
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    int theme = settings.value("theme", ThemeDefault).toInt();
+    settings.endGroup();
+    SettingsDialog::applyTheme(theme);
+
     MainWindow w;
     w.show();
 
@@ -32,7 +40,7 @@ int main(int argc, char *argv[])
 
 void checkGameforgeClient()
 {
-    const wchar_t* gameforgeClientName = L"gfclient.exe";
+    const wchar_t *gameforgeClientName = L"gfclient.exe";
 
     if (isProcessRunning(gameforgeClientName))
     {
